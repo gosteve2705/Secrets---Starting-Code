@@ -5,6 +5,8 @@ const ejs = require("ejs");
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const app = express();
+const encrypt = require('mongoose-encryption');
+
 app.use(bodyParser.urlencoded({extended : true}));
 app.use(express.static('public'));
 // Registering and setting  the view engine
@@ -13,11 +15,12 @@ app.set('view engine', 'ejs');
 
 mongoose.connect("mongodb://localhost:27017/userDB", {useNewUrlParser: true ,useUnifiedTopology: true });
 
-const userSchema = {
+const userSchema = new mongoose.Schema({
   email: String,
   password: String
-};
-
+});
+const secret = 'thisismysecret';
+userSchema.plugin(encrypt, { secret: secret, encryptedFields:['password'] });
 const User = new mongoose.model('user', userSchema);
 
 
@@ -59,11 +62,16 @@ app.post('/login',function(req,res){
   const username = req.body.username;
   const password = req.body.password;
   User.findOne({email: username},function(err,foundUser){
-    if(foundUser.password === password){
-      res.render('secrets');
+    if (err){
+      console.log(err);
     }else{
-      res.send('wrong password or username');
+      if(foundUser.password === password){
+        res.render('secrets');
+      }else{
+        res.send('wrong password or username');
+      }
     }
+
   });
 });
 

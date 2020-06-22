@@ -23,7 +23,9 @@ body {
 .footer {
 	position: absolute;
 	text-align: center;
+  font-size: 2rem;
 	bottom: 0;
+    color: #fff;
 	width: 100%;
 	height: 60px;
 background-color: #000

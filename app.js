@@ -11,7 +11,6 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const findOrCreate = require('mongoose-findorcreate');
 const GitHubStrategy = require('passport-github').Strategy;
 const FacebookStrategy = require('passport-facebook').Strategy;
-
 const passportLocalMongoose = require("passport-local-mongoose");
 
 app.use(bodyParser.urlencoded({extended : true}));
@@ -30,7 +29,8 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-mongoose.connect("mongodb://localhost:27017/userDB", {useNewUrlParser: true ,useUnifiedTopology: true,useCreateIndex: true });
+mongoose.connect(process.env.MONGODB_URL, {useNewUrlParser: true ,useUnifiedTopology: true,useCreateIndex: true });
+
 
 const userSchema = new mongoose.Schema({
   email: String,
@@ -149,7 +149,7 @@ app.post('/submit',function(req,res){
         foundUser.secrets =  submittedSecret ;
 
         foundUser.save(function(){
-          res.redirect('/secrets')
+          res.redirect('/secrets');
         });
       }
     }
@@ -231,6 +231,6 @@ req.login(user, function(err) {
 });
 
 
-app.listen(3000,function(){
+app.listen(process.env.PORT||3000,function(){
   console.log("server started on port 3000");
 });

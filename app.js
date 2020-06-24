@@ -41,11 +41,16 @@ const userSchema = new mongoose.Schema({
   secrets: String
 });
 
+const secretSchema = new mongoose.Schema({
+  secrets: String
+});
+
 
 userSchema.plugin(passportLocalMongoose);
 userSchema.plugin(findOrCreate);
 const User = new mongoose.model('user', userSchema);
 
+const Secret = new mongoose.model('secret', secretSchema);
 
 
 
